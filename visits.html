@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>الزيارات المحفوظة</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+      body {
+        font-family: "Cairo", sans-serif;
+        background-color: #f8f9fa;
+      }
+      .card {
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+      .search-input {
+        max-width: 400px;
+        margin: auto;
+      }
+      @media print {
+        .btn,
+        .search-input,
+        a,
+        header,
+        .text-center.mt-3,
+        .form-control,
+        .form-select {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">
+          <i class="bi bi-clipboard-data-fill me-1"></i> الزيارات المحفوظة
+        </h2>
+        <a href="index.html" class="btn btn-outline-secondary rounded-pill">
+          <i class="bi bi-arrow-return-right"></i> الرجوع
+        </a>
+      </div>
+
+      <div class="text-center mb-3">
+        <input
+          id="searchInput"
+          type="text"
+          class="form-control search-input"
+          placeholder="ابحث عن زيارة..."
+        />
+      </div>
+
+      <div class="row mb-4 justify-content-center">
+        <div class="col-md-3 mb-2">
+          <input
+            type="date"
+            id="filterDate"
+            class="form-control"
+            placeholder="تاريخ الزيارة"
+          />
+        </div>
+        <div class="col-md-3 mb-2">
+          <select id="filterCategory" class="form-select">
+            <option value="">كل التصنيفات</option>
+            <option value="دوائية">دوائية</option>
+            <option value="غذائية">غذائية</option>
+            <option value="صناعية">صناعية</option>
+            <option value="تجارية">تجارية</option>
+            <option value="طبية وصحية">طبية وصحية</option>
+            <option value="سياحية وفندقية">سياحية وفندقية</option>
+            <option value="استيراد وتصدير">استيراد وتصدير</option>
+            <option value="أخرى">أخرى</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="visitsList" class="row g-4"></div>
+    </div>
+
+    <script>
+      const visits = JSON.parse(localStorage.getItem("visits") || "[]");
+      const container = document.getElementById("visitsList");
+      const searchInput = document.getElementById("searchInput");
+      const filterDate = document.getElementById("filterDate");
+      const filterCategory = document.getElementById("filterCategory");
+
+      function renderVisits(filter = "") {
+        container.innerHTML = "";
+
+        const filtered = visits.filter((visit) => {
+          const text =
+            `${visit.company} ${visit.person} ${visit.category}`.toLowerCase();
+          const matchesText = text.includes(filter.toLowerCase());
+
+          const matchesCategory =
+            !filterCategory.value ||
+            (visit.category &&
+              visit.category.trim() === filterCategory.value.trim());
+
+          let matchesDate = true;
+          if (filterDate.value) {
+            const visitDate = new Date(visit.datetime)
+              .toISOString()
+              .split("T")[0];
+            matchesDate = visitDate === filterDate.value;
+          }
+
+          return matchesText && matchesCategory && matchesDate;
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML =
+            "<p class='text-center'>لا توجد زيارات مطابقة.</p>";
+          return;
+        }
+
+        filtered.forEach((visit, index) => {
+          const visitId = `visit-${index}`;
+          const visitHtml = `
+            <div class="col-md-6">
+              <div class="card p-3" id="${visitId}">
+                <h5 class="text-primary"><i class="bi bi-building"></i> ${
+                  visit.company
+                }</h5>
+                <p><strong>الشخص:</strong> ${visit.person}</p>
+                <p><strong>الهاتف:</strong> ${visit.phone}</p>
+                <p><strong>نوع الزيارة:</strong> ${visit.visitType}</p>
+                <p><strong>التاريخ:</strong> ${visit.datetime}</p>
+                <p><strong>المندوب:</strong> ${visit.representative} (${
+            visit.personPosition || ""
+          })</p>
+                <p><strong>الهدف:</strong> ${visit.goal}</p>
+                <p><strong>التصنيف:</strong> ${visit.category}</p>
+                <p><strong>الملخص:</strong> ${visit.summary}</p>
+                <p><strong>الخطة:</strong> ${visit.plan}</p>
+                <p><strong>رقم الزيارة:</strong> ${
+                  visit.visitNumber || "غير محدد"
+                }</p>
+
+                <div class="text-center mt-3 d-flex justify-content-center gap-2 flex-wrap">
+                  <button onclick="downloadAsPDF('${visitId}', '${
+            visit.company
+          }')" class="btn btn-sm btn-danger rounded-pill px-3">
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                  </button>
+                  <button onclick="deleteVisit(${index})" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                    <i class="bi bi-trash"></i> حذف
+                  </button>
+                </div>
+              </div>
+            </div>`;
+          container.innerHTML += visitHtml;
+        });
+      }
+
+      function downloadAsPDF(id, filename) {
+        const original = document.getElementById(id);
+
+        const printable = document.createElement("div");
+        printable.style.direction = "rtl";
+        printable.style.fontFamily = "Cairo, sans-serif";
+        printable.style.fontSize = "16px";
+        printable.style.lineHeight = "1.8";
+        printable.style.color = "#000";
+        printable.style.padding = "20px";
+        printable.style.border = "1px solid #ccc";
+        printable.style.backgroundColor = "#fff";
+
+        const header = document.createElement("div");
+        header.style.textAlign = "center";
+        header.style.marginBottom = "20px";
+
+        const title = document.createElement("h2");
+        title.textContent = "تقرير زيارة العميل";
+        title.style.color = "#007bff";
+        const date = document.createElement("p");
+        date.textContent = `تاريخ التصدير: ${new Date().toLocaleDateString(
+          "ar-EG"
+        )}`;
+        date.style.fontSize = "14px";
+        date.style.color = "#555";
+
+        header.appendChild(title);
+        header.appendChild(date);
+
+        printable.appendChild(header);
+        printable.innerHTML += original.innerHTML;
+
+        html2pdf()
+          .set({
+            margin: 0.5,
+            filename: `${filename}-visit.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+          })
+          .from(printable)
+          .save();
+      }
+
+      function deleteVisit(index) {
+        if (confirm("هل أنت متأكد من حذف هذه الزيارة؟")) {
+          visits.splice(index, 1);
+          localStorage.setItem("visits", JSON.stringify(visits));
+          renderVisits(searchInput.value);
+        }
+      }
+
+      searchInput.addEventListener("input", () =>
+        renderVisits(searchInput.value)
+      );
+      filterDate.addEventListener("change", () =>
+        renderVisits(searchInput.value)
+      );
+      filterCategory.addEventListener("change", () =>
+        renderVisits(searchInput.value)
+      );
+
+      // عرض أولي للزيارات
+      renderVisits();
+    </script>
+  </body>
+</html>

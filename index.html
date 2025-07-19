@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>استمارة زيارة الزبائن</title>
+
+    <!-- Bootstrap RTL -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- خط عربي -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container py-5">
+      <form id="visitForm">
+        <div class="card shadow-lg border-0 rounded-4 px-4 py-5 bg-white">
+          <h2 class="text-center mb-4 text-primary fw-bold">
+            <i class="bi bi-person-lines-fill me-2"></i> استمارة زيارة الزبائن
+          </h2>
+
+          <!-- ✅ معلومات الشركة -->
+          <div class="border rounded-4 p-4 mb-5 bg-light-subtle">
+            <h5 class="mb-3 text-primary fw-bold">
+              <i class="bi bi-buildings-fill me-2"></i>معلومات الشركة
+            </h5>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-building me-1"></i>اسم الشركة:</label
+                >
+                <input
+                  type="text"
+                  name="company"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-person-fill me-1"></i>اسم الشخص
+                  المعني:</label
+                >
+                <input
+                  type="text"
+                  name="person"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-envelope-fill me-1"></i>البريد
+                  الإلكتروني:</label
+                >
+                <input
+                  type="email"
+                  name="personEmail"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-telephone-fill me-1"></i>رقم الهاتف:</label
+                >
+                <input type="tel" name="phone" class="form-control" required />
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-briefcase-fill me-1"></i>وظيفة الشخص
+                  المعني:</label
+                >
+                <input type="text" name="personPosition" class="form-control" />
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-tags-fill me-1"></i>تصنيف الشركة:</label
+                >
+                <select name="category" class="form-select" required>
+                  <option selected disabled>اختر التصنيف</option>
+                  <option value="دوائية">دوائية</option>
+                  <option value="غذائية ">غذائية</option>
+                  <option value="صناعية ">صناعية</option>
+                  <option value="تجارية ">تجارية</option>
+                  <option value="طبية وصحية ">طبية وصحية</option>
+                  <option value="سياحية وفندقية">سياحية وفندقية</option>
+                  <option value="استيراد وتصدير">استيراد وتصدير</option>
+                  <option value="أخرى">أخرى</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ✅ تفاصيل الزيارة -->
+          <div class="border rounded-4 p-4 mb-5 bg-light-subtle">
+            <h5 class="mb-3 text-primary fw-bold">
+              <i class="bi bi-journal-text me-2"></i>تفاصيل الزيارة
+            </h5>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-flag-fill me-1"></i>الهدف من الزيارة:</label
+                >
+                <select name="goal" class="form-select" required>
+                  <option selected disabled>اختر الهدف</option>
+                  <option value=" جديدة (تعريف عام)">جديدة (تعريف عام)</option>
+                  <option value="تقديم عرض سعر ">تقديم عرض سعر</option>
+                  <option value="متابعة عرض سعر  ">متابعة عرض سعر</option>
+                  <option value=" خدمة فنية">خدمة فنية</option>
+                  <option value="متابعة حسابات  ">متابعة حسابات</option>
+                  <option value="أخرى">أخرى</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-pin-map-fill me-1"></i>نوع الزيارة:</label
+                >
+                <select name="visitType" class="form-select" required>
+                  <option selected disabled>اختر نوع الزيارة</option>
+                  <option value="داخلية">داخلية</option>
+                  <option value="خارجية">خارجية</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-calendar-check me-1"></i>التاريخ
+                  والوقت:</label
+                >
+                <input
+                  type="datetime-local"
+                  name="datetime"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-hash me-1"></i>رقم الزيارة:</label
+                >
+                <input type="text" name="visitNumber" class="form-control" />
+              </div>
+            </div>
+            <div class="mt-4">
+              <label class="form-label"
+                ><i class="bi bi-journal-text me-1"></i>ملخص المواضيع التي تم
+                مناقشتها:</label
+              >
+              <textarea name="summary" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="mt-4">
+              <label class="form-label"
+                ><i class="bi bi-lightbulb-fill me-1"></i>خطة العمل:</label
+              >
+              <textarea name="plan" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- ✅ معلومات المندوب والمرفقات -->
+          <div class="border rounded-4 p-4 mb-5 bg-light-subtle">
+            <h5 class="mb-3 text-primary fw-bold">
+              <i class="bi bi-person-badge-fill me-2"></i>معلومات المندوب
+              والمرفقات
+            </h5>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+              <div>
+                <label class="form-label"
+                  ><i class="bi bi-person-badge-fill me-1"></i>اسم
+                  المندوب:</label
+                >
+                <input
+                  type="text"
+                  name="representative"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <p class="mb-2 fw-semibold">
+                <i class="bi bi-paperclip me-1"></i>لإرسال المرفقات يدويًا،
+                يُرجى الضغط على الرابط التالي:
+              </p>
+              <a
+                href="mailto:example@email.com?subject=مرفقات استمارة زيارة&body=يرجى إرفاق الملفات المطلوبة هنا."
+                class="btn btn-outline-primary rounded-pill"
+              >
+                <i class="bi bi-envelope-arrow-up me-1"></i>إرسال المرفقات عبر
+                البريد
+              </a>
+            </div>
+          </div>
+
+          <!-- ✅ زر الإرسال -->
+          <input type="hidden" name="fullReport" id="fullReport" />
+          <div
+            class="col-12 d-flex flex-column flex-md-row justify-content-center gap-3 mt-3"
+          >
+            <button
+              type="submit"
+              class="btn btn-lg btn-material-green ripple rounded-4 px-5 py-2 d-flex align-items-center justify-content-center fw-bold shadow-sm"
+            >
+              <i class="bi bi-send-fill me-2 fs-5"></i> إرسال
+            </button>
+            <a
+              href="visits.html"
+              class="btn btn-lg btn-material-light ripple rounded-4 px-4 py-2 d-flex align-items-center justify-content-center fw-semibold shadow-sm"
+            >
+              <i class="bi bi-folder2-open me-2 fs-5"></i> عرض الزيارات
+            </a>
+          </div>
+
+          <p
+            id="statusMsg"
+            class="text-center mt-3 fw-semibold text-success"
+          ></p>
+        </div>
+      </form>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,155 @@
+body {
+  background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: "Cairo", sans-serif;
+}
+
+/* زخرفة باستخدام SVG */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://www.transparenttextures.com/patterns/graphy.png");
+  opacity: 0.07;
+  z-index: -1;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #dee2e6;
+}
+
+.visit-card {
+  background: white;
+  backdrop-filter: blur(2px);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+textarea {
+  resize: none;
+}
+
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* تأثير ripple عند الضغط */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  background-color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple:active::after {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple-animation 0.6s linear;
+}
+
+/* أزرار Material Design */
+.btn-material-green {
+  background-color: #00c853;
+  color: white;
+  border: none;
+}
+
+.btn-material-green:hover {
+  background-color: #00b140;
+}
+
+.btn-material-light {
+  background-color: #ffffff;
+  color: #007bff;
+  border: 2px solid #007bff;
+}
+
+.btn-material-light:hover {
+  background-color: #e6f0ff;
+}
+
+.form-control,
+.form-select {
+  border-radius: 12px;
+  border: 1px solid #ced4da;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 200, 83, 0.25);
+  border-color: #00c853;
+}
+
+.visit-card {
+  border-left: 6px solid #00c853;
+  transition: box-shadow 0.3s ease;
+}
+.visit-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* تأثير ripple */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+.ripple:active::after {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple-animation 0.6s linear;
+}
+
+/* زر صغير وأنيق */
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
